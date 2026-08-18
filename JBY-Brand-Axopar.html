@@ -905,7 +905,7 @@ body.cx-lock{overflow:hidden}
   <a class="logo" href="#top" aria-label="Jeff Brown Yachts &mdash; Home"><img src="./assets/jby_logo.svg" alt="Jeff Brown Yachts"/></a>
   <div class="right">
     <button class="icon" aria-label="Search"><i class="ti ti-search"></i></button>
-    <button class="cta" data-open-contact>Contact an expert</button>
+    <button class="cta" data-open-contact data-general>Contact an expert</button>
   </div>
 </nav>
 
@@ -1175,7 +1175,7 @@ body.cx-lock{overflow:hidden}
     <div class="cx-success" id="cx-success" hidden>
       <div class="cx-check">&#10003;</div>
       <h3>Thank you</h3>
-      <p>Your request about <strong id="cx-success-brand">Axopar</strong> is on its way. A Jeff Brown Yachts expert will be in touch shortly.</p>
+      <p>Your request<span id="cx-success-about"> about <strong id="cx-success-brand">Axopar</strong></span> is on its way. A Jeff Brown Yachts expert will be in touch shortly.</p>
       <button type="button" class="cx-submit" id="cx-success-close">Close</button>
     </div>
   </div>
@@ -1303,7 +1303,9 @@ body.cx-lock{overflow:hidden}
       return '<div class="cx-ms-opt' + (on ? ' sel' : '') + '" role="option" aria-selected="' + on + '" data-b="' + b + '"><span class="box">' + (on ? '✓' : '') + '</span>' + b + '</div>';
     }).join('');
     if (cxIntInp) cxIntInp.value = msSel.join(', ');
-    if (cxSuccessBrand) cxSuccessBrand.textContent = msSel.length ? msSel.join(', ') : 'your selection';
+    if (cxSuccessBrand) cxSuccessBrand.textContent = msSel.join(', ');
+    var cxAbout = document.getElementById('cx-success-about');
+    if (cxAbout) cxAbout.style.display = msSel.length ? '' : 'none';
   }
   function msToggle(b){ var i = msSel.indexOf(b); if (i === -1) msSel.push(b); else msSel.splice(i,1); msRender(); }
   function msOpen(o){ if (!msWrap) return; msWrap.classList.toggle('open', o); if (msCtrl) msCtrl.setAttribute('aria-expanded', o ? 'true':'false'); }
@@ -1314,7 +1316,7 @@ body.cx-lock{overflow:hidden}
 
   function cxOpen(interest){
     if (!cxOverlay) return;
-    msSel = [interest || PAGE_INTEREST];
+    msSel = (interest === '') ? [] : [interest || PAGE_INTEREST];
     msRender();
     msOpen(false);
     if (cxForm) cxForm.hidden = false;
@@ -1338,7 +1340,7 @@ body.cx-lock{overflow:hidden}
 
   // Triggers: nav "Contact an expert", hero "Get Expert Guidance", CTA "Book a consultation"
   document.querySelectorAll('[data-open-contact]').forEach(function(btn){
-    btn.addEventListener('click', function(e){ e.preventDefault(); cxOpen(btn.getAttribute('data-interest')); });
+    btn.addEventListener('click', function(e){ e.preventDefault(); cxOpen(btn.hasAttribute('data-general') ? '' : btn.getAttribute('data-interest')); });
   });
   if (cxOverlay) cxOverlay.addEventListener('click', function(e){ if (e.target === cxOverlay) cxClose(); });
   var cxCloseBtn = document.getElementById('cx-close');

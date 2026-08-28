@@ -793,6 +793,25 @@ a:focus-visible,button:focus-visible,[role="button"]:focus-visible,input:focus-v
   transition:opacity .6s cubic-bezier(0.22,1,0.36,1),transform .6s cubic-bezier(0.22,1,0.36,1),
              flex-basis .55s cubic-bezier(0.22,1,0.36,1),box-shadow .35s ease}
 .ax-strip .vessel-card.reveal.in{opacity:1;transform:none}
+/* The whole card is the click target — remove the chevron button (buggy white/scale on tap) */
+.v-cta{display:none!important}
+
+/* Model image opens in a lightbox / gallery on click */
+.ax-model-stage img{cursor:zoom-in}
+.ax-lb{position:fixed;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;padding:24px;
+  background:rgba(10,22,32,0.92);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;transition:opacity .3s ease}
+.ax-lb.open{display:flex}.ax-lb.in{opacity:1}
+.ax-lb-stage{display:flex;flex-direction:column;align-items:center;gap:16px;width:min(94vw,1200px)}
+.ax-lb img{max-width:100%;max-height:78vh;object-fit:contain;background:#fff;border-radius:2px}
+.ax-lb-cap{font-family:'Mesmerize',sans-serif;font-weight:300;font-size:16px;letter-spacing:0.04em;text-transform:uppercase;color:#fff;opacity:.9}
+.ax-lb-close{position:fixed;top:14px;right:16px;width:40px;height:40px;border:0;cursor:pointer;background:transparent;color:#fff;
+  font-size:34px;line-height:1;opacity:.8;transition:opacity .2s;display:flex;align-items:center;justify-content:center}
+.ax-lb-close:hover{opacity:1}
+.ax-lb-arr{position:fixed;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:2px;background:rgba(255,255,255,0.12);
+  color:#fff;border:0;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;transition:background .25s}
+.ax-lb-arr:hover{background:rgba(255,255,255,0.22)}
+.ax-lb-arr.prev{left:12px}.ax-lb-arr.next{right:12px}
+@media (max-width:560px){.ax-lb-arr{width:40px;height:40px}.ax-lb-arr.prev{left:4px}.ax-lb-arr.next{right:4px}}
 
 /* Reveal-friendly section spacing */
 .ax-about{padding-top:96px}
@@ -875,25 +894,45 @@ body.cx-lock{overflow:hidden}
 @media (max-width:560px){.cx-row2{grid-template-columns:1fr}.cx-head{padding:26px 22px 22px}.cx-body{padding:22px}}
 
 @media (max-width:980px){
+  html,body{overflow-x:hidden}
   .ax-wrap{padding:0 24px}
+  /* Footer: stack + smaller gutters on mobile (fixed 312px column caused horizontal scroll) */
+  footer{padding-left:24px;padding-right:24px}
+  .foot-grid{grid-template-columns:1fr;gap:28px}
+  .foot-grid>*{min-width:0}
+  .foot-nav{flex-wrap:wrap}
   .ax-hero{height:clamp(620px,86vh,860px)}
+  .ax-hero-bg{object-position:66% center;transform:none}
   .ax-hero-inner{padding:0 24px 40px}
   .ax-hero-mark{height:38px}
   .ax-hero-tag{font-size:18px;line-height:26px}
+  /* Hero CTAs stack full-width (edge to edge within the gutters) */
+  .ax-hero-btns{flex-direction:column;gap:14px;width:100%}
+  .ax-hero-btns .ax-btn{width:100%}
   .ax-about-cols{flex-direction:column;gap:32px}
   .ax-about-left{width:100%}
-  .ax-stats{width:100%}
+  /* Stat cards stay 2x2 on mobile */
+  .ax-stats{width:100%;gap:12px}
   .ax-h2{font-size:26px;line-height:38px}
   .ax-model-stage{height:300px}
   .ax-model-stage img{width:92%}
+  /* Model chevrons closer to the edges */
+  .ax-model-arr{width:40px;height:40px}
+  .ax-model-arr.prev{left:4px}
+  .ax-model-arr.next{right:4px}
   .ax-listings-head{flex-direction:column;align-items:flex-start;gap:16px;margin-bottom:32px}
   .ax-strip{gap:16px;scroll-snap-type:x mandatory}
-  .ax-strip .vessel-card{flex-basis:270px;scroll-snap-align:start}
-  .ax-strip .vessel-card:hover{flex-basis:270px;box-shadow:none}
+  /* Slightly wider listing cards on mobile */
+  .ax-strip .vessel-card{flex-basis:min(84vw,340px);scroll-snap-align:start}
+  .ax-strip .vessel-card:hover{flex-basis:min(84vw,340px);box-shadow:none}
 }
 @media (max-width:560px){
-  .ax-stats{grid-template-columns:1fr}
   .ax-tab{font-size:20px}
+  .ax-stat{padding:16px}
+  .ax-stat .k{font-size:14px;line-height:20px}
+  .ax-stat .v{font-size:17px;line-height:24px}
+  /* Header CTA doesn't fit on phones (caused horizontal scroll) — hamburger + hero CTAs cover contact */
+  .nav .cta{display:none}
 }
 
 /* ====== MOBILE POLISH (phones only) ====== */
@@ -1193,6 +1232,17 @@ body.cx-lock{overflow:hidden}
   </div>
 </div>
 
+<!-- ============================ MODEL LIGHTBOX / GALLERY ============================ -->
+<div class="ax-lb" id="ax-lb" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Model gallery">
+  <button class="ax-lb-close" id="ax-lb-close" aria-label="Close">&times;</button>
+  <button class="ax-lb-arr prev" id="ax-lb-prev" aria-label="Previous model"><i class="ti ti-chevron-left"></i></button>
+  <div class="ax-lb-stage">
+    <img id="ax-lb-img" src="" alt=""/>
+    <div class="ax-lb-cap" id="ax-lb-cap"></div>
+  </div>
+  <button class="ax-lb-arr next" id="ax-lb-next" aria-label="Next model"><i class="ti ti-chevron-right"></i></button>
+</div>
+
 <script>
 (function(){
   // ---- Reveal on load for anything already in view ----
@@ -1273,6 +1323,45 @@ body.cx-lock{overflow:hidden}
   var mn = document.getElementById('ax-model-next');
   if (mp) mp.addEventListener('click', function(){ setModel(active - 1); });
   if (mn) mn.addEventListener('click', function(){ setModel(active + 1); });
+
+  // ---- Model image opens in a lightbox / gallery (tap the render) ----
+  var lb = document.getElementById('ax-lb');
+  var lbImg = document.getElementById('ax-lb-img');
+  var lbCap = document.getElementById('ax-lb-cap');
+  function lbSync(){
+    if (!modelImg || !lbImg) return;
+    lbImg.src = modelImg.getAttribute('src');
+    lbCap.textContent = tabs.length ? tabs[active].getAttribute('data-model') : '';
+    lbImg.alt = lbCap.textContent;
+  }
+  function lbOpen(){
+    if (!lb) return;
+    lbSync();
+    lb.classList.add('open'); lb.setAttribute('aria-hidden','false');
+    document.body.classList.add('cx-lock');
+    requestAnimationFrame(function(){ lb.classList.add('in'); });
+  }
+  function lbClose(){
+    if (!lb) return;
+    lb.classList.remove('in'); document.body.classList.remove('cx-lock');
+    lb.setAttribute('aria-hidden','true');
+    setTimeout(function(){ lb.classList.remove('open'); }, 300);
+  }
+  function lbStep(d){ setModel(active + d); setTimeout(lbSync, 230); }
+  if (modelImg) modelImg.addEventListener('click', lbOpen);
+  var lbCloseBtn = document.getElementById('ax-lb-close');
+  if (lbCloseBtn) lbCloseBtn.addEventListener('click', lbClose);
+  if (lb) lb.addEventListener('click', function(e){ if (e.target === lb) lbClose(); });
+  var lbPrev = document.getElementById('ax-lb-prev');
+  var lbNext = document.getElementById('ax-lb-next');
+  if (lbPrev) lbPrev.addEventListener('click', function(){ lbStep(-1); });
+  if (lbNext) lbNext.addEventListener('click', function(){ lbStep(1); });
+  document.addEventListener('keydown', function(e){
+    if (!lb || !lb.classList.contains('open')) return;
+    if (e.key === 'Escape') lbClose();
+    else if (e.key === 'ArrowLeft') lbStep(-1);
+    else if (e.key === 'ArrowRight') lbStep(1);
+  });
 
   // ---- Listings: sideways scroll via arrow; loops back to start at the end ----
   window.axStripScroll = function(dir){

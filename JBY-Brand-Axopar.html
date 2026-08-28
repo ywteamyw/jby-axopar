@@ -422,7 +422,7 @@ a{color:inherit;text-decoration:none}
 .video-hero:hover .bg{transform:scale(1.04)}
 .video-hero .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 50%,rgba(0,0,0,0.6) 100%)}
 .video-hero .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:96px;height:96px;
-  border-radius:50%;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);
+  border-radius:2px;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);
   border:0.5px solid rgba(255,255,255,0.6);display:flex;align-items:center;justify-content:center;color:#fff;
   font-size:30px;z-index:3;transition:.3s}
 .video-hero:hover .play{background:rgba(255,255,255,0.28);transform:translate(-50%,-50%) scale(1.08)}
@@ -934,6 +934,18 @@ body.cx-lock{overflow:hidden}
   /* Header CTA doesn't fit on phones (caused horizontal scroll) — hamburger + hero CTAs cover contact */
   .nav .cta{display:none}
 }
+
+/* ====== MOBILE POLISH (phones only) ====== */
+@media (max-width:600px){
+  /* the wide CTA does not fit next to the burger and the logo */
+  .nav .cta{display:none}
+
+  /* "info@jeffbrownyachts.com" is one unbreakable token in uppercase Mesmerize:
+     one size step down keeps the footer inside a phone screen */
+  .foot-col p{font-size:14px;line-height:18px}
+  .foot-col p a{font-size:inherit}
+}
+
 </style>
 </head>
 <body class="ax-page" data-interest="Axopar">

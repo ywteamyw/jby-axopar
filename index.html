@@ -801,9 +801,10 @@ a:focus-visible,button:focus-visible,[role="button"]:focus-visible,input:focus-v
 .ax-lb{position:fixed;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;padding:24px;
   background:rgba(10,22,32,0.92);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;transition:opacity .3s ease}
 .ax-lb.open{display:flex}.ax-lb.in{opacity:1}
-.ax-lb-stage{display:flex;flex-direction:column;align-items:center;gap:16px;width:min(94vw,1200px)}
-.ax-lb img{max-width:100%;max-height:78vh;object-fit:contain;background:#fff;border-radius:2px}
-.ax-lb-cap{font-family:'Mesmerize',sans-serif;font-weight:300;font-size:16px;letter-spacing:0.04em;text-transform:uppercase;color:#fff;opacity:.9}
+.ax-lb-stage{display:flex;align-items:center;justify-content:center;width:min(94vw,1200px)}
+.ax-lb img{max-width:100%;max-height:80vh;object-fit:contain;background:#fff;border-radius:2px}
+/* caption pinned to the bottom so the image (and the arrows) stay dead-centre */
+.ax-lb-cap{position:fixed;left:0;right:0;bottom:28px;text-align:center;font-family:'Mesmerize',sans-serif;font-weight:300;font-size:16px;letter-spacing:0.04em;text-transform:uppercase;color:#fff;opacity:.9}
 .ax-lb-close{position:fixed;top:14px;right:16px;width:40px;height:40px;border:0;cursor:pointer;background:transparent;color:#fff;
   font-size:34px;line-height:1;opacity:.8;transition:opacity .2s;display:flex;align-items:center;justify-content:center}
 .ax-lb-close:hover{opacity:1}
